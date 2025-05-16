@@ -1,6 +1,6 @@
 
 
-#  Towards Non-Stationary Time Series Forecasting with Temporal Fusion and Frequency Differencing
+#  Towards Non-Stationary Time Series Forecasting with Temporal Stabilization and Frequency Differencing
 
  [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  [![PyTorch](https://img.shields.io/badge/PyTorch-2.4.1-blue)](https://pytorch.org/)
 
@@ -9,8 +9,7 @@ This code is the official PyTorch implementation of our paper: Towards Non-Stati
 
 ## Introduction
 
-DTAF, a dual-branch framework that addresses non-stationarity in both the temporal and frequency domains. For the temporal domain, the Temporal Stabilizing Fusion (TFS) module employs a non-stationary mix of experts (MOE) filter to disentangle and suppress temporal non-stationary 
-patterns while preserving long-term dependencies. For the frequency domain, the Frequency Wave Modeling (FWM) module applies frequency differencing to dynamically highlight components with significant spectral shifts. By fusing the complementary outputs of TFS and FWM,  DTAF generates robust forecasts that adapt to both temporal and frequency domain non-stationarity.
+***DTAF***, a dual-branch framework that addresses non-stationarity in both the temporal and frequency domains. For the temporal domain, the ***Temporal Stabilizing Fusion*** (TFS) module employs a non-stationary mix of experts (MOE) filter to disentangle and suppress temporal non-stationary patterns while preserving long-term dependencies. For the frequency domain, the ***Frequency Wave Modeling*** (FWM) module applies frequency differencing to dynamically highlight components with significant spectral shifts. By fusing the complementary outputs of TFS and FWM, DTAF generates robust forecasts that adapt to both temporal and frequency domain non-stationarity.  
 
 ![The framework of DTAF](./figs/framework.png)
 
