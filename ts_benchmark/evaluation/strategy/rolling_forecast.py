@@ -383,7 +383,6 @@ class RollingForecast(ForecastingStrategy):
         fit_method = model.forecast_fit if hasattr(model, "forecast_fit") else model.fit
         fit_method(
             target_train_valid_data,
-            covariates=covariates_train,
             train_ratio_in_tv=train_ratio_in_tv,
         )
         end_fit_time = time.time()

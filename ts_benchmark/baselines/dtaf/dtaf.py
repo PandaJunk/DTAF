@@ -10,7 +10,7 @@ from torch import optim
 
 from ts_benchmark.baselines.dtaf.model.DTAF_model import DTAF as DTAF_Model
 
-from ts_benchmark.baselines.rag.utils.tools import (
+from ts_benchmark.baselines.dtaf.utils.tools import (
     EarlyStopping,
     adjust_learning_rate,
 )
@@ -21,7 +21,7 @@ from ts_benchmark.baselines.utils import (
     get_time_mark,
 )
 from ts_benchmark.models.model_base import ModelBase, BatchMaker
-from ts_benchmark.utils.data_processing import split_before
+from ts_benchmark.utils.data_processing import split_time as split_before
 
 DEFAULT_TRANSFORMER_BASED_HYPER_PARAMS = {
     "sample_num": 0,
@@ -138,7 +138,7 @@ class DTAF(ModelBase):
         Returns the name of the model.
         """
 
-        return "rag"
+        return "DTAF"
 
     def multi_forecasting_hyper_param_tune(self, train_data: pd.DataFrame):
         freq = pd.infer_freq(train_data.index)
@@ -239,7 +239,8 @@ class DTAF(ModelBase):
         total_loss = []
         self.model.eval()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+        # min_loss = 100
+        # dtaf = torch.load('dtaf.pth')
         for input, target, input_mark, target_mark in valid_data_loader:
             input, target, input_mark, target_mark = (
                 input.to(device),
@@ -256,14 +257,22 @@ class DTAF(ModelBase):
             )
 
             output, stables = self.model(input)
+            # output, stables = dtaf(input)
 
             target = target[:, -config.horizon :, :]
             output = output[:, -config.horizon :, :]
             loss = criterion(output, target).detach().cpu().numpy()
+            # if loss < min_loss:
+            #     torch.save(input, 'demo_input.pth')
+            #     torch.save(target, 'demo_target.pth')
+            #     # torch.save(input, 'dlinear_input.pth')
+            #     torch.save(input_mark, 'input_mark.pth')
+            #     # break
             total_loss.append(loss)
 
         total_loss = np.mean(total_loss)
         self.model.train()
+        # print('finish')
         return total_loss
 
     def klLoss(self, stables, sample_num):
@@ -367,7 +376,7 @@ class DTAF(ModelBase):
         )
 
         print(f"Total trainable parameters: {total_params}")
-
+        self.best_score = None
         for epoch in range(config.num_epochs):
             self.model.train()
             # for input, target, input_mark, target_mark in train_data_loader:
@@ -399,11 +408,17 @@ class DTAF(ModelBase):
             if train_ratio_in_tv != 1:
                 valid_loss = self.validate(valid_data_loader, criterion)
                 self.early_stopping(valid_loss, self.model)
+                # score = -valid_loss
+                # if self.best_score is None:
+                #     self.best_score = score
+                #     torch.save(self.model, 'dtaf.pth')
+                # elif score >= self.best_score:
+                #     self.best_score = score
+                #     torch.save(self.model, 'dtaf.pth')
                 if self.early_stopping.early_stop:
                     break
 
             adjust_learning_rate(optimizer, epoch + 1, config)
-        torch.save(self.model, 'visual.pth')
 
     def forecast(self, horizon: int, train: pd.DataFrame) -> np.ndarray:
         """
@@ -563,7 +578,7 @@ class DTAF(ModelBase):
                     torch.tensor(input_mark_np, dtype=torch.float32).to(device),
                     torch.tensor(target_mark_np, dtype=torch.float32).to(device),
                 )
-                output, stables = self.model(input, dec_input[:, -self.config.horizon :, :])
+                output, stables = self.model(input)
                 column_num = output.shape[-1]
                 real_batch_size = output.shape[0]
                 answer = (

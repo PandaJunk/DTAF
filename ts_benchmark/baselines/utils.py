@@ -5,10 +5,7 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-
-from ts_benchmark.baselines.time_series_library.utils.timefeatures import (
-    time_features,
-)
+from ts_benchmark.baselines.timefeatures import time_features
 from ts_benchmark.utils.data_processing import split_time
 
 
@@ -156,7 +153,6 @@ def decompose_time(
     if freq_scores.get(freq, max_score) >= 5:
         df_stamp["second"] = df_stamp.date.dt.second
     return df_stamp.drop(["date"], axis=1).values
-
 
 def get_time_mark(
     time_stamp: np.ndarray,

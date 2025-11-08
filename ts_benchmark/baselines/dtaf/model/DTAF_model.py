@@ -44,10 +44,11 @@ class TFS(nn.Module):
             self.moe = MOE(expert_num=configs.expert_num, input_dim=input_dim, div=configs.kan_div)
 
     def forward(self, x):
+        origin = x
         if self.configs.expert_num > 0:
             x = x - self.moe(x)
         H = self.extractor_his(x)
-        weight_current = self.gate(self.extractor_cur(x)).repeat(1, 1, x.shape[-1])
+        weight_current = self.gate(self.extractor_cur(origin)).repeat(1, 1, origin.shape[-1])
 
         weight = self.weight_linear(H).softmax(dim=-1)
 
@@ -61,6 +62,8 @@ class TFS(nn.Module):
             out = self.norm(H_history + H_current)
         else:
             out = H_history + H_current
+        torch.save(origin, "input.pth")
+        torch.save(x, "stables.pth")
         return out, x
 
 class Attention(nn.Module):
