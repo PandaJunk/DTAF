@@ -1,10 +1,10 @@
 
 
-#  AAAI 2026: Towards Non-Stationary Time Series Forecasting with Temporal Stabilization and Frequency Differencing
+#  (AAAI 2026) Towards Non-Stationary Time Series Forecasting with Temporal Stabilization and Frequency Differencing
 
  [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  [![PyTorch](https://img.shields.io/badge/PyTorch-2.4.1-blue)](https://pytorch.org/)
 
-This code is the official PyTorch implementation of our paper: Towards Non-Stationary Time Series Forecasting with Temporal Stabilization and Frequency Differencing.
+This code is a PyTorch implementation of our ICLR'24 paper "Towards Non-Stationary Time Series Forecasting with Temporal Stabilization and Frequency Differencing". [[arXiv]](https://arxiv.org/abs/2511.08229)
 
 
 ## Introduction
@@ -43,3 +43,16 @@ Extensive experiments on 11 real-world datasets from 6 different application dom
 <div align="center">
 <img alt="Logo" src="figs/full_results.png" width="100%"/>
 </div>
+
+## Citing DTAF
+If you find this resource helpful, please consider to cite our research:
+
+```
+@inproceedings{
+    lu2025dtaf,
+    title={Towards Non-Stationary Time Series Forecasting with Temporal Stabilization and Frequency Differencing},
+    author={Junkai Lu and Peng Chen and Chenjuan Guo and Yang Shu and Meng Wang and Bin Yang},
+    booktitle={AAAI},
+    year={2026}
+}
+```
